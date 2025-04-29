@@ -595,7 +595,7 @@ Common HTTP status codes:
 1. Clone the repository
 
    ```
-   git clone https://github.com/Ereh11/Bug-Tracking-System.git
+   git clone https://github.com/Ereh11/Bug-Ticketing-System.git
    ```
 
 2. Update database connection string in `appsettings.json`
@@ -612,7 +612,7 @@ Common HTTP status codes:
    dotnet run --project BugTrackingSystem.API
    ```
 
-5. API will be available at `https://localhost:5001` or `http://localhost:5000`
+5. API will be available at `https://localhost:5279` or `http://localhost:5000`
 
 ## 📄 License
 
