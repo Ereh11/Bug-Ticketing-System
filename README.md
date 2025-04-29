@@ -14,9 +14,9 @@
   - [🗂️ File Management](#️-file-management)
   - [🛡️ Role Management](#️-role-management)
   - [👥 User Role Assignment](#-user-role-assignment)
-  - [⚠️ Error Handling](#️-error-handling)
-  - [🚀 Getting Started](#-getting-started)
-  - [📄 License](#-license)
+- [⚠️ Error Handling](#️-error-handling)
+- [🚀 Getting Started](#-getting-started)
+- [📄 License](#-license)
 
 ## 📖 Overview
 
