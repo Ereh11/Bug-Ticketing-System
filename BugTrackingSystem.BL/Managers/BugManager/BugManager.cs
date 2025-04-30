@@ -46,7 +46,7 @@ public class BugManager : IBugManager
     public async Task<GeneralResult> GetAllBugsAsync()
     {
         var bugs = await _unitWork.BugRepository
-            .GetBugsWithProjectInfo();
+            .GetBugWithProjectAndAttachmentInfo();
         if (bugs == null || !bugs.Any())
         {
             return new GeneralResult
@@ -66,7 +66,14 @@ public class BugManager : IBugManager
             {
                 ProjectId = b.Project.ProjectId,
                 Name = b.Project.Name,
-            }
+            },
+            Attachments = b.Attachments.Select(a => new AttachmentForBugDto
+            {
+                AttachmentId = a.AttachmentId,
+                FileName = a.FileName,
+                FilePath = a.FileUrl,
+                CreatedDate = a.CreatedDate,
+            }).ToList()
         }).ToList();
         return new GeneralResult<List<BugViewDto>>
         {

@@ -95,6 +95,7 @@ public class AttachmentManager : IAttachmentManager
         return new GeneralResult<List<AttachmentViewDto>>
         {
             Success = true,
+            Message = "Attachments retrieved successfully",
             Data = attachmentDtos
         };
     }

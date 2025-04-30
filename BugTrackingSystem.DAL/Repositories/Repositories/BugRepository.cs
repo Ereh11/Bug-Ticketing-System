@@ -15,29 +15,11 @@ public class BugRepository : GenericRepository<Bug>, IBugRepository
     {
         _context = context;
     }
-    public async Task<List<Bug>> GetBugsWithProjectInfo()
+    public async Task<List<Bug>?> GetBugWithProjectAndAttachmentInfo()
     {
         return await _context.Set<Bug>()
-            .Where(b => b.BugAssignments.Any(bs => bs.UserId == userId))
-            .Include(b => b.BugAssignments)
-            .AsNoTracking()
-            .ToListAsync();
-    }
-
-    public async Task<IEnumerable<Bug>> GetBugsByPriorityAsync(BugPriority priority)
-    {
-        return await _context.Set<Bug>()
-            .Where(b => b.Priority == priority)
-            .Include(b => b.BugAssignments)
-            .AsNoTracking()
-            .ToListAsync();
-    }
-
-    public async Task<IEnumerable<Bug>> GetBugsByProjectAsync(Guid projectId)
-    {
-        return await _context.Set<Bug>()
-            .Where(b => b.ProjectId == projectId)
             .Include(b => b.Project)
+            .Include(b => b.Attachments)
             .AsNoTracking()
             .ToListAsync();
     }
