@@ -160,6 +160,7 @@ The API supports a complete bug lifecycle from creation to resolution, with feat
 | Action     | Endpoint              | Description                        |
 |------------|-----------------------|------------------------------------|
 | 📄 Get All | `GET /api/users`      | Retrieve all registered users      |
+| 📄 Get By Id | `GET /api/users/{id}`      | Retrieve the specific registered users|
 | 🛠 Update  | `PUT /api/users/{id}` | Update a specific user's info      |
 | ❌ Delete  | `DELETE /api/users/{id}` | Delete a specific user          |
 
@@ -335,6 +336,37 @@ The API supports a complete bug lifecycle from creation to resolution, with feat
 
 - **Description**: Get detailed bug information
 - **Response**: Detailed bug data including its attachments
+  ```json
+  {
+    "data": {
+        "id": "e1904520-ea11-4c88-3cfb-08dd8785765b",
+        "title": "Bug Updated",
+        "description": "It's just Test",
+        "status": 1,
+        "priority": 1,
+        "project": {
+            "projectId": "17d6b305-5799-42bb-cd44-08dd8785256b",
+            "name": "ProjectProgramming"
+        },
+        "attachments": [
+            {
+                "attachmentId": "38a3a21d-69b1-4b5d-b456-910e041a6b27",
+                "fileName": "API Project.pdf",
+                "filePath": "/attachments/b98aa617-0332-4867-92bf-7726f039a857.pdf",
+                "createdDate": "2025-04-30T13:45:43.768"
+            },
+            {
+                "attachmentId": "e85290af-e8c9-43da-bc39-fa5e08997810",
+                "fileName": "SSDLC Certification.pdf",
+                "filePath": "/attachments/9176f0df-bc96-4918-bae1-de154c493b1f.pdf",
+                "createdDate": "2025-04-30T01:26:17.768"
+            }
+        ]
+    },
+    "success": true,
+    "message": "Bug retrieved successfully.",
+    "errors": null
+  }
 
 #### `POST /api/bugs`
 
@@ -378,10 +410,10 @@ The API supports a complete bug lifecycle from creation to resolution, with feat
 
 | Action              | Endpoint                                  | Description                                  |
 |---------------------|-------------------------------------------|----------------------------------------------|
-| ➕ Assign Bug        | `PUT /api/bugs/{id}/assignees`            | Assign a bug to a user                       |
+| ➕ Assign Bug        | `POST /api/bugs/{id}/assignees`            | Assign a bug to a user                       |
 | ❌ Unassign Bug      | `DELETE /api/bugs/{id}/assignees/{id}`    | Unassign a specific user from a specific bug |
 
-#### `PUT /api/bugs/{id}/assignees`
+#### `POST /api/bugs/{id}/assignees`
 
 - **Description**: Assign bug to user
 - **Headers**: Authorization Bearer [token]
@@ -389,8 +421,8 @@ The API supports a complete bug lifecycle from creation to resolution, with feat
 
   ```json
   {
-    "userId": "user123",
-    "comment": "Assigning to frontend team"
+    "userId": "45d15845-7123-472a-0ff2-08dd87844aae",
+    "assignedDate": "2025-04-29"
   }
 - **Response**: Object with message successfully or failed
 
@@ -431,10 +463,9 @@ Manage file attachments related to bug reports.
       "errors": null
   }
 
-#### `POST /api/Bugs/{bugId}/attachments/{attachmentId}`
+#### `DELETE /api/Bugs/{bugId}/attachments/{attachmentId}`
 
 - **Description**: Delete attachment from the bug.
-- **Headers**: Authorization Bearer [token]
 - **Response**:
 
   ```json
@@ -444,7 +475,7 @@ Manage file attachments related to bug reports.
     "errors": null
   }
 
-#### `POST /api/Bugs/{bugId}/attachments`
+#### `GET /api/Bugs/{bugId}/attachments`
 
 - **Description**: Get all attachment of the specific bug.
 - **Response**: List of all attachments of specific bug
