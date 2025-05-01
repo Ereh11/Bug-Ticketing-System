@@ -15,24 +15,6 @@ public class UserRoleRepository : GenericRepository<UserRole>, IUserRoleReposito
     {
         _context = context;
     }
-    public async Task<IEnumerable<UserRole>> GetUserRolesByRoleIdAsync(Guid roleId)
-    {
-        return await _context.Set<UserRole>()
-            .Where(ur => ur.RoleId == roleId)
-            .Include(ur => ur.Role)
-            .Include(ur => ur.User)
-            .AsNoTracking()
-            .ToListAsync();
-    }
-    public async Task<IEnumerable<UserRole>> GetUserRolesByUserIdAsync(Guid userId)
-    {
-        return await _context.Set<UserRole>()
-            .Where(ur => ur.UserId == userId)
-            .Include(ur => ur.Role)
-            .Include(ur => ur.User)
-            .AsNoTracking()
-            .ToListAsync();
-    }
     public async Task RemoveUserRoleAsync(Guid userId, Guid roleId)
     {
         await _context.Set<UserRole>()
