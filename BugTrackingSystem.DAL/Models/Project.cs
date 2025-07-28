@@ -9,7 +9,11 @@
         public DateTime? StartDate { get; set; } = DateTime.UtcNow;
         public DateTime? EndDate { get; set; } = DateTime.UtcNow.AddYears(1);
         public bool IsActive { get; set; } = true;
+
         public ICollection<Bug> Bugs { get; set; } = new HashSet<Bug>();
         public ICollection<ProjectMember> ProjectMembers { get; set; } = new HashSet<ProjectMember>();
+
+        public Guid? ManagerId { get; set; }
+        public User? Manager { get; set; } = null!;
     }
 }

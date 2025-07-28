@@ -23,6 +23,7 @@ public static class DependencyInjectionSetUp
         services.AddScoped<IUserRoleRepository, UserRoleRepository>();
         services.AddScoped<IBugAssignmentRepository, BugAssignmentRepository>();
         services.AddScoped<IProjectMemberRepository, ProjectMemberRepository>();
+        services.AddScoped<ICommentRepository, CommentRepository>();
         services.AddScoped<IUnitWork, UnitWork>();
         services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
     }

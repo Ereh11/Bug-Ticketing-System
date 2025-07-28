@@ -21,16 +21,6 @@ public class BugAssignmentRepository : GenericRepository<BugAssignment>, IBugAss
             .AddAsync(bugAssignment);
     }
 
-    public async Task<IEnumerable<BugAssignment>> GetBugAssignmentsByBugIdAsync(Guid bugId)
-    {
-        return await _context.Set<BugAssignment>()
-            .Where(x => x.BugId == bugId)
-            .Include(x => x.Bug)
-            .Include(x => x.User)
-            .AsNoTracking()
-            .ToListAsync();
-    }
-
     public async Task<List<BugAssignment>?> GetBugAssignmentsByUserIdAsync(Guid userId)
     {
         return await _context.Set<BugAssignment>()
@@ -39,9 +29,14 @@ public class BugAssignmentRepository : GenericRepository<BugAssignment>, IBugAss
             .ToListAsync();
     }
 
-    public Task<List<BugAssignment>?> GetUserAssignmentsByBugIdAsync(Guid bugId)
+    public async Task<List<BugAssignment>?> GetUserAssignmentsByBugIdAsync(Guid bugId)
     {
-        throw new NotImplementedException();
+        return await _context.Set<BugAssignment>()
+            .Where(x => x.BugId == bugId)
+            .Include(x => x.Bug)
+            .Include(x => x.User)
+            .AsNoTracking()
+            .ToListAsync();
     }
 
     public async Task RemoveBugAssignmentAsync(Guid bugId, Guid userId)

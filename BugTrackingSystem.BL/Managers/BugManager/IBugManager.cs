@@ -13,4 +13,6 @@ public interface IBugManager
     Task<GeneralResult> GetAllBugsAsync();
     Task<GeneralResult> GetBugByIdAsync(Guid bugId);
     Task<GeneralResult> UpdateBugAsync(Guid bugId, BugUpdateDto bugUpdateDto);
+    Task<GeneralResult> GetAssigneesByBugIdAsync(Guid bugId);
+    Task<GeneralResult> GetBugByIdWithAllInfoAsync(Guid bugId);
 }

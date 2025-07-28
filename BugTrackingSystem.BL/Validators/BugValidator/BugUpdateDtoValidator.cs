@@ -25,11 +25,6 @@ public class BugUpdateDtoValidator : AbstractValidator<BugUpdateDto>
         RuleFor(x => x.Status)
             .IsInEnum()
             .WithMessage("Status must be a valid enum value.");
-        RuleFor(x => x.ProjectId)
-            .NotEmpty()
-            .WithMessage("ProjectId is required.")
-            .MustAsync(BeValidProjectId)
-            .WithMessage("ProjectId is not found.");
     }
     private async Task<bool> BeValidProjectId(Guid projectId, CancellationToken cancellationToken)
     {

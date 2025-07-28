@@ -11,4 +11,5 @@ public class BugViewDto
     public BugPriority Priority { get; set; }
     public ProjectViewForBugDto Project { get; set; } = null!;
     public List<AttachmentForBugDto>? Attachments { get; set; } = null!;
+    public List<BugAssignmentUserDto> BugAssignmentUser { get; set; } = null!;
 }

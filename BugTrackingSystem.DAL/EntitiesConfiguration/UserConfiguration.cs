@@ -11,7 +11,6 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
 {
     public void Configure(EntityTypeBuilder<User> builder)
     {
-
         builder.Property(u => u.FirstName)
             .IsRequired()
             .HasMaxLength(50);
@@ -33,5 +32,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .WithOne(pm => pm.User)
             .HasForeignKey(pm => pm.UserId)
             .OnDelete(DeleteBehavior.Cascade);
+            
+        builder.HasMany(u => u.Comments)
+            .WithOne(c => c.User)
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Restrict);
     }
 }

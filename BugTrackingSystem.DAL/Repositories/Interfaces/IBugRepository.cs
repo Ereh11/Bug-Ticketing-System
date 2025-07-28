@@ -11,4 +11,5 @@ public interface IBugRepository : IGenericRepository<Bug>
     Task<List<Bug>?> GetBugWithProjectAndAttachmentInfo();
     Task<Bug?> GetBugWithProjectInfo(Guid bugId);
     Task<Bug?> GetBugWithProjectAndAttachmentInfo(Guid bugId);
+    Task<Bug?> GetBugByIdWithProjectAndAttachmentInfo(Guid bugId);
 }

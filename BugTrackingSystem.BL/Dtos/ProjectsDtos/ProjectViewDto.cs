@@ -12,6 +12,7 @@ public class ProjectViewDto
     public DateTime? StartDate { get; set; }
     public DateTime? EndDate { get; set; }
     public bool IsActive { get; set; }
+    public UserViewDto? Manager { get; set; } = null!;
     public List<UserViewInProjectInfo?> Users { get; set; } = null!;
     public List<BugViewForProjectInfo?> Bugs { get; set; } = null!;
 }

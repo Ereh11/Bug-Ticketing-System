@@ -13,5 +13,6 @@ public class BugUpdateDto
     public string Description { get; set; } = string.Empty;
     public BugStatus Status { get; set; }
     public BugPriority Priority { get; set; }
-    public Guid ProjectId { get; set; }
+    public ChangeAssignmentDto ChangeAssignmentDto { get; set; } = new ChangeAssignmentDto();
+
 }

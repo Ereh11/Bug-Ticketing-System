@@ -34,7 +34,7 @@ namespace BugTrackingSystem.Controllers
 
 
         [HttpPost]
-        [Authorize(Policy = Constants.Policies.Admin)]
+        //[Authorize(Policy = Constants.Policies.Admin)]
         public async Task<Results<Ok<GeneralResult>, BadRequest<GeneralResult>>> AddRole([FromBody] RoleAddDto roleAddDto)
         {
             var response = await _roleManager.AddRoleAsync(roleAddDto);

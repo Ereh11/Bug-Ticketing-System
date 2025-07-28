@@ -1,4 +1,5 @@
 ﻿using BugTrackingSystem.BL;
+using BugTrackingSystem.BL.Managers.CommentManager;
 using BugTrackingSystem.DAL;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -11,15 +12,18 @@ namespace BugTrackingSystem.Controllers
     public class BugsController : ControllerBase
     {
         private readonly IBugManager _bugManager;
+        private readonly ICommentManager _commentManager;
         private readonly IAttachmentManager _attachmentManager;
         private readonly IBugAssignmentManager _bugAssignmentManager;
         public BugsController(IBugManager bugManager,
             IAttachmentManager attachmentManager,
-            IBugAssignmentManager bugAssignmentManager)
+            IBugAssignmentManager bugAssignmentManager,
+            ICommentManager commentManager)
         {
             _bugManager = bugManager;
             _attachmentManager = attachmentManager;
             _bugAssignmentManager = bugAssignmentManager;
+            _commentManager = commentManager;
         }
         [HttpPost]
         public async Task<Results<Ok<GeneralResult>, BadRequest<GeneralResult>>> AddBug([FromBody] BugAddDto bugAddDto)
@@ -67,7 +71,7 @@ namespace BugTrackingSystem.Controllers
         public async Task<Results<Ok<GeneralResult>, NotFound<GeneralResult>>> GetBugById(Guid bugId)
         {
             var response = await _bugManager
-                .GetBugByIdAsync(bugId);
+                .GetBugByIdWithAllInfoAsync(bugId);
             if (response.Success)
             {
                 return TypedResults.Ok(response);
@@ -161,6 +165,48 @@ namespace BugTrackingSystem.Controllers
             else
             {
                 return TypedResults.BadRequest(response);
+            }
+        }
+        [HttpGet("{bugId:guid}/assignees")]
+        public async Task<Results<Ok<GeneralResult>, NotFound<GeneralResult>>> GetAssigneesByBugId([FromRoute] Guid bugId)
+        {
+            var response = await _bugManager
+                .GetAssigneesByBugIdAsync(bugId);
+            if (response.Success)
+            {
+                return TypedResults.Ok(response);
+            }
+            else
+            {
+                return TypedResults.NotFound(response);
+            }
+        }
+        [HttpPost("comment")]
+        public async Task<Results<Ok<GeneralResult>, BadRequest<GeneralResult>>> AddComment([FromBody] CommentAddDto commentAddDto)
+        {
+            var response = await _commentManager
+                .AddCommentAsync(commentAddDto);
+            if (response.Success)
+            {
+                return TypedResults.Ok(response);
+            }
+            else
+            {
+                return TypedResults.BadRequest(response);
+            }
+        }
+        [HttpGet("{bugId:guid}/comments")]
+        public async Task<Results<Ok<GeneralResult>, NotFound<GeneralResult>>> GetCommentsByBugId([FromRoute] Guid bugId)
+        {
+            var response = await _commentManager
+                .GetCommentsByBugIdAsync(bugId);
+            if (response.Success)
+            {
+                return TypedResults.Ok(response);
+            }
+            else
+            {
+                return TypedResults.NotFound(response);
             }
         }
 

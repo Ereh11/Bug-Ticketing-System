@@ -16,7 +16,7 @@ namespace BugTrackingSystem.Controllers
             _projectMemberManager = projectMemberManager;
         }
         [HttpPost]
-        [Authorize(Policy = Constants.Policies.Admin)]
+        //[Authorize(Policy = Constants.Policies.Admin)]
         public async Task<Results<Ok<GeneralResult>, BadRequest<GeneralResult>>> AddProjectMember([FromBody] ProjectMemberAddDto projectMemberAddDto)
         {
             var result = await _projectMemberManager
@@ -34,7 +34,7 @@ namespace BugTrackingSystem.Controllers
 
 
         [HttpDelete]
-        [Authorize(Policy = Constants.Policies.Admin)]
+        //[Authorize(Policy = Constants.Policies.Admin)]
         public async Task<Results<Ok<GeneralResult>, BadRequest<GeneralResult>>> RemoveProjectMember([FromBody] ProjectMemberRemoveDto projectMemberRemoveDto)
         {
             var result = await _projectMemberManager.RemoveProjectMemberAsync(projectMemberRemoveDto);

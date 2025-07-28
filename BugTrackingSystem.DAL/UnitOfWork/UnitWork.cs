@@ -1,7 +1,4 @@
-﻿
-
-
-namespace BugTrackingSystem.DAL;
+﻿namespace BugTrackingSystem.DAL;
 
 public class UnitWork : IUnitWork
 {
@@ -20,6 +17,8 @@ public class UnitWork : IUnitWork
     public IAttachmentRepository AttachmentRepository { get; }
 
     public IBugAssignmentRepository BugAssignmentRepository { get; }
+    
+    public ICommentRepository CommentRepository { get; }
 
     private readonly BugTrackingSystemContext _context;
     public UnitWork(BugTrackingSystemContext context,
@@ -30,7 +29,8 @@ public class UnitWork : IUnitWork
         IUserRoleRepository userRoleRepository,
         IRoleRepository roleRepository,
         IAttachmentRepository attachmentRepository,
-        IBugAssignmentRepository bugAssignmentRepository
+        IBugAssignmentRepository bugAssignmentRepository,
+        ICommentRepository commentRepository
         )
     { 
         _context = context;
@@ -42,6 +42,7 @@ public class UnitWork : IUnitWork
         RoleRepository = roleRepository;
         AttachmentRepository = attachmentRepository;
         BugAssignmentRepository = bugAssignmentRepository;
+        CommentRepository = commentRepository;
     }
     public async Task<int> SaveChangesAsync()
     {

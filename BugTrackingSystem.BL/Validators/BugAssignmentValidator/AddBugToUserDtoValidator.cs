@@ -21,9 +21,9 @@ public class AddBugToUserDtoValidator : AbstractValidator<AddBugToUserDto>
             .WithMessage("Bug ID is required.");
         RuleFor(x => x.AssignedDate)
             .NotEmpty()
-            .WithMessage("Assigned date is required.")
-            .LessThanOrEqualTo(DateTime.UtcNow)
-            .WithMessage("Assigned date cannot be in the future.");
+            .WithMessage("Assigned date is required.");
+            //.LessThanOrEqualTo(DateTime.UtcNow)
+            //.WithMessage("Assigned date cannot be in the future.");
         RuleFor(x => x)
             .MustAsync(ExistingUserAndBug)
             .WithMessage("User or Bug does not exist.");

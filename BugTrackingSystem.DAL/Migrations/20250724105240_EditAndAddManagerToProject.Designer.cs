@@ -4,6 +4,7 @@ using BugTrackingSystem.DAL;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace BugTrackingSystem.DAL.Migrations
 {
     [DbContext(typeof(BugTrackingSystemContext))]
-    partial class BugTrackingSystemContextModelSnapshot : ModelSnapshot
+    [Migration("20250724105240_EditAndAddManagerToProject")]
+    partial class EditAndAddManagerToProject
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -107,35 +110,6 @@ namespace BugTrackingSystem.DAL.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("BugAssignments");
-                });
-
-            modelBuilder.Entity("BugTrackingSystem.DAL.Comment", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<Guid>("BugId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("Text")
-                        .IsRequired()
-                        .HasMaxLength(2000)
-                        .HasColumnType("nvarchar(2000)");
-
-                    b.Property<DateTime>("TextDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BugId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("Comments");
                 });
 
             modelBuilder.Entity("BugTrackingSystem.DAL.Project", b =>
@@ -464,25 +438,6 @@ namespace BugTrackingSystem.DAL.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BugTrackingSystem.DAL.Comment", b =>
-                {
-                    b.HasOne("BugTrackingSystem.DAL.Bug", "Bug")
-                        .WithMany("Comments")
-                        .HasForeignKey("BugId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("BugTrackingSystem.DAL.User", "User")
-                        .WithMany("Comments")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
-
-                    b.Navigation("Bug");
-
-                    b.Navigation("User");
-                });
-
             modelBuilder.Entity("BugTrackingSystem.DAL.Project", b =>
                 {
                     b.HasOne("BugTrackingSystem.DAL.User", "Manager")
@@ -572,8 +527,6 @@ namespace BugTrackingSystem.DAL.Migrations
                     b.Navigation("Attachments");
 
                     b.Navigation("BugAssignments");
-
-                    b.Navigation("Comments");
                 });
 
             modelBuilder.Entity("BugTrackingSystem.DAL.Project", b =>
@@ -591,8 +544,6 @@ namespace BugTrackingSystem.DAL.Migrations
             modelBuilder.Entity("BugTrackingSystem.DAL.User", b =>
                 {
                     b.Navigation("BugAssignments");
-
-                    b.Navigation("Comments");
 
                     b.Navigation("ManagedProjects");
 

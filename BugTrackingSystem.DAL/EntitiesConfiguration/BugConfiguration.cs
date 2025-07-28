@@ -33,6 +33,10 @@ public class BugConfiguration : IEntityTypeConfiguration<Bug>
             .WithOne(a => a.Bug)
             .HasForeignKey(a => a.BugId)
             .OnDelete(DeleteBehavior.Cascade);
+        builder.HasMany(b => b.Comments)
+            .WithOne(c => c.Bug)
+            .HasForeignKey(c => c.BugId)
+            .OnDelete(DeleteBehavior.Cascade);
         builder.HasOne(b => b.Project)
             .WithMany(p => p.Bugs)
             .HasForeignKey(b => b.ProjectId)

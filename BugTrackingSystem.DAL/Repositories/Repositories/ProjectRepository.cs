@@ -43,6 +43,8 @@ public class ProjectRepository : GenericRepository<Project>, IProjectRepository
         return await _context.Set<Project>()
              .Include(p => p.ProjectMembers)
              .Where(p => p.ProjectMembers.Any(pm => pm.UserId == userId))
+             .Include(p => p.Bugs)
+             .Include(p => p.Manager)
              .AsNoTracking()
              .ToListAsync();
     }
@@ -71,14 +73,23 @@ public class ProjectRepository : GenericRepository<Project>, IProjectRepository
             .AnyAsync(p => p.ProjectId == projectId && p.ProjectMembers.Any(pm => pm.UserId == userId));
     }
 
-    public async Task<List<Project>> GetProjectsWithAllInfoAsync()
+    public async Task<(List<Project>, int)> GetPaginatedProjectsWithAllInfoAsync(int pageNumber, int pageSize)
     {
-        return await _context.Set<Project>()
+        var query = _context.Set<Project>()
             .Include(p => p.ProjectMembers)
             .ThenInclude(pm => pm.User)
             .Include(p => p.Bugs)
+            .Include(p => p.Manager)
             .AsNoTracking()
+            .OrderBy(p => p.Name);
+
+        var totalRecords = await query.CountAsync();
+        var projects = await query
+            .Skip((pageNumber - 1) * pageSize)
+            .Take(pageSize)
             .ToListAsync();
+
+        return (projects, totalRecords);
     }
 
     public async Task<Project> GetProjectWithAllInfoAsync(Guid projectId)
@@ -87,6 +98,7 @@ public class ProjectRepository : GenericRepository<Project>, IProjectRepository
             .Include(p => p.ProjectMembers)
             .ThenInclude(pm => pm.User)
             .Include(p => p.Bugs)
+            .Include(p => p.Manager)
             .AsNoTracking()
             .FirstOrDefaultAsync(p => p.ProjectId == projectId) ?? throw new Exception("Project not found");
     }

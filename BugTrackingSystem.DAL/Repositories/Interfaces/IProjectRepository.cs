@@ -15,6 +15,6 @@ public interface IProjectRepository: IGenericRepository<Project>
     Task<bool> IsUserInProjectAsync(Guid userId, Guid projectId);
     Task<IEnumerable<Project>> GetProjectsWithBugsAsync();
     Task<Project> GetProjectWithBugsAsync(Guid projectId);
-    Task<List<Project>> GetProjectsWithAllInfoAsync();
+    Task<(List<Project>, int)> GetPaginatedProjectsWithAllInfoAsync(int pageNumber, int pageSize);
     Task<Project> GetProjectWithAllInfoAsync(Guid projectId);
 }

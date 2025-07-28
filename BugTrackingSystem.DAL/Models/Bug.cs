@@ -18,5 +18,6 @@ namespace BugTrackingSystem.DAL
         public Project Project { get; set; } = null!;
         public ICollection<BugAssignment> BugAssignments { get; set; } = new HashSet<BugAssignment>();
         public ICollection<Attachment> Attachments { get; set; } = new HashSet<Attachment>();
+        public ICollection<Comment> Comments { get; set; } = new HashSet<Comment>();
     }
 }

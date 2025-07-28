@@ -16,5 +16,6 @@ public interface IUnitWork
     IRoleRepository RoleRepository { get; } 
     IAttachmentRepository AttachmentRepository { get; }
     IBugAssignmentRepository BugAssignmentRepository { get; }
+    ICommentRepository CommentRepository { get; }
     Task<int> SaveChangesAsync();
 }

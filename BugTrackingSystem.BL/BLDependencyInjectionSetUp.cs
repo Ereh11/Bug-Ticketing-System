@@ -1,4 +1,5 @@
-﻿using FluentValidation;
+﻿using BugTrackingSystem.BL.Managers.CommentManager;
+using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BugTrackingSystem.BL;
@@ -15,6 +16,7 @@ public static class BLDependencyInjectionSetUp
         services.AddScoped<IAttachmentManager, AttachmentManager>();
         services.AddScoped<IProjectMemberManager, ProjectMemberManager>();
         services.AddScoped<IBugAssignmentManager, BugAssignmentManager>();
+        services.AddScoped<ICommentManager, CommentManager>();
         services.AddValidatorsFromAssembly(
             typeof(BLDependencyInjectionSetUp).Assembly
             );

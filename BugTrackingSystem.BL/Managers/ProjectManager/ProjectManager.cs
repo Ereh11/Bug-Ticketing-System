@@ -43,6 +43,54 @@ public class ProjectManager : IProjectManager
         };
     }
 
+    public async Task<GeneralResult> AssginManagerToProjectAsync(Guid projectId, Guid userId)
+    {
+        var projectFromDb = await _unitWork.ProjectRepository
+            .GetByIdAsync(projectId);
+        if (projectFromDb == null)
+        {
+            return new GeneralResult
+            {
+                Success = false,
+                Message = "Project not found",
+                Errors = new List<ResultError>
+                {
+                    new ResultError
+                    {
+                        Message = "Project not found",
+                        Code = "404"
+                    }
+                }
+            };
+        }
+        var userFromDb = await _unitWork.UserRepository
+            .GetByIdAsync(userId);
+        if (userFromDb == null)
+        {
+            return new GeneralResult
+            {
+                Success = false,
+                Message = "User not found",
+                Errors = new List<ResultError>
+                {
+                    new ResultError
+                    {
+                        Message = "User not found",
+                        Code = "404"
+                    }
+                }
+            };
+        }
+        projectFromDb.Manager = userFromDb;
+        await _unitWork.SaveChangesAsync();
+        return new GeneralResult<ProjectViewDto>
+        {
+            Success = true,
+            Message = "Manager assigned to project successfully",
+            Data = null
+        };
+    }
+
     public async Task<GeneralResult> DeleteProjectAsync(Guid id)
     {
         var projectFromDb = await _unitWork.ProjectRepository
@@ -72,34 +120,45 @@ public class ProjectManager : IProjectManager
         };
     }
 
-    public async Task<GeneralResult<List<ProjectViewDto>>> GetAllProjectsAsync()
+    public async Task<PagedResult<List<ProjectViewDto>>> GetAllProjectsAsync(int pageNumber, int pageSize)
     {
-        var projectsFromDb = await _unitWork.ProjectRepository
-            .GetProjectsWithAllInfoAsync();
-        if (projectsFromDb == null || !projectsFromDb.Any())
+        // Validate inputs
+        pageNumber = pageNumber < 1 ? 1 : pageNumber;
+        pageSize = pageSize switch
         {
-            return new GeneralResult<List<ProjectViewDto>>
+            < 1 => 10,
+            > 100 => 100,
+            _ => pageSize
+        };
+
+        var (projects, totalRecords) = await _unitWork.ProjectRepository
+            .GetPaginatedProjectsWithAllInfoAsync(pageNumber, pageSize);
+
+        if (!projects.Any())
+        {
+            return new PagedResult<List<ProjectViewDto>>
             {
                 Success = false,
                 Message = "No projects found",
-                Errors = new List<ResultError>
-                {
-                    new ResultError
-                    {
-                        Message = "No projects found",
-                        Code = "404"
-                    }
-                }
+                Errors = new List<ResultError> { new() { Message = "No projects found", Code = "404" } },
+                PageNumber = pageNumber,
+                PageSize = pageSize,
+                TotalRecords = totalRecords,
+                TotalPages = (int)Math.Ceiling(totalRecords / (double)pageSize)
             };
         }
-        return new GeneralResult<List<ProjectViewDto>>
+
+        return new PagedResult<List<ProjectViewDto>>
         {
             Success = true,
             Message = "Projects retrieved successfully",
-            Data = projectsFromDb.Select(p => p.MapToProjectViewDto()).ToList()
+            Data = projects.Select(p => p.MapToProjectViewDto()).ToList(),
+            PageNumber = pageNumber,
+            PageSize = pageSize,
+            TotalRecords = totalRecords,
+            TotalPages = (int)Math.Ceiling(totalRecords / (double)pageSize)
         };
-
-        }
+    }
 
     public async Task<GeneralResult> GetProjectByIdAsync(Guid id)
     {
@@ -129,6 +188,101 @@ public class ProjectManager : IProjectManager
         };
     }
 
+    public async Task<GeneralResult> GetProjectByUser(Guid id)
+    {
+        var projects = await _unitWork.ProjectRepository
+            .GetProjectsByUserIdAsync(id);
+        if (projects == null)
+        {
+            return new GeneralResult
+            {
+                Success = false,
+                Message = "Projects not found",
+                Errors = new List<ResultError>
+                {
+                    new ResultError
+                    {
+                        Message = "Projects not found",
+                        Code = "404"
+                    }
+                }
+            };
+        }
+        return new GeneralResult<List<ProjectViewDto>>
+        {
+            Success = true,
+            Message = "Projects found",
+            Data = projects.Select(p => p.MapToUserProjectViewDto()).ToList()
+        };  
+
+    }
+
+    public async Task<GeneralResult> UnAssignMemberFromProjectAsync(Guid projectId, Guid userId)
+    {
+        var project = await _unitWork.ProjectRepository
+            .GetByIdAsync(projectId);
+        if (project == null)
+        {
+            return new GeneralResult
+            {
+                Success = false,
+                Message = "Project not found",
+                Errors = new List<ResultError>
+                {
+                    new ResultError
+                    {
+                        Message = "Project not found",
+                        Code = "404"
+                    }
+                }
+            };
+        }
+        var user = await _unitWork.UserRepository
+            .GetByIdAsync(userId);
+        if (user == null)
+        {
+            return new GeneralResult
+            {
+                Success = false,
+                Message = "User not found",
+                Errors = new List<ResultError>
+                {
+                    new ResultError
+                    {
+                        Message = "User not found",
+                        Code = "404"
+                    }
+                }
+            };
+        }
+        bool checkExistance = await _unitWork.ProjectMemberRepository
+            .ExistsByCompositeKeyAsync(projectId, userId);
+        if (!checkExistance)
+        {   return new GeneralResult
+            {
+                Success = false,
+                Message = "User is not assigned to this project",
+                Errors = new List<ResultError>
+                {
+                    new ResultError
+                    {
+                        Message = "User is not assigned to this project",
+                        Code = "400"
+                    }
+                }
+            };
+        }
+        await _unitWork.ProjectMemberRepository
+            .RemoveProjectMemberAsync(projectId, userId);
+        await _unitWork.SaveChangesAsync();
+        return new GeneralResult
+        {
+            Success = true,
+            Message = "User unassigned from project successfully"
+        };
+    }
+    
+
     public async Task<GeneralResult> UpdateProjectAsync(Guid id, ProjectUpdateDto projectUpdateDto)
     {
         var projectFromDb = await _unitWork.ProjectRepository
@@ -157,16 +311,16 @@ public class ProjectManager : IProjectManager
         }
         projectFromDb.Name = projectUpdateDto.Name;
         projectFromDb.Description = projectUpdateDto.Description;
-        projectFromDb.Status = projectUpdateDto.Status;
-        projectFromDb.StartDate = projectUpdateDto.StartDate;
-        projectFromDb.EndDate = projectUpdateDto.EndDate;
-        projectFromDb.IsActive = projectUpdateDto.IsActive;
+        //projectFromDb.Status = projectUpdateDto.Status;
+        //projectFromDb.StartDate = projectUpdateDto.StartDate;
+        //projectFromDb.EndDate = projectUpdateDto.EndDate;
+        //projectFromDb.IsActive = projectUpdateDto.IsActive;
         await _unitWork.SaveChangesAsync();
         return new GeneralResult<ProjectViewDto>
         {
             Success = true,
             Message = "Project updated successfully",
-            Data = projectFromDb.MapToProjectViewDto()
+            
         };
     }
 }

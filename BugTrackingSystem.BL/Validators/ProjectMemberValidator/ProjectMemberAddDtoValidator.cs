@@ -30,7 +30,7 @@ namespace BugTrackingSystem.BL
                 .WithMessage("This user is already a member of the project.");
 
             RuleFor(x => x.JoinedDate)
-                .LessThanOrEqualTo(DateTime.UtcNow)
+                .GreaterThan(DateTime.UtcNow)
                 .WithMessage("Assigned date cannot be in the future.");
         }
 

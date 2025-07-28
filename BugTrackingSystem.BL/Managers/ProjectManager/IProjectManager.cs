@@ -1,11 +1,14 @@
 ﻿namespace BugTrackingSystem.BL;
-using BugTrackingSystem.DAL;
 
 public interface IProjectManager
 {
     Task<GeneralResult> AddProjectAsync(ProjectAddDto projectAddDto);
-    Task<GeneralResult<List<ProjectViewDto>>> GetAllProjectsAsync();
+    Task<PagedResult<List<ProjectViewDto>>> GetAllProjectsAsync(int pageNumber, int pageSize);
     Task<GeneralResult> GetProjectByIdAsync(Guid id);
     Task<GeneralResult> UpdateProjectAsync(Guid id, ProjectUpdateDto projectUpdateDto);
     Task<GeneralResult> DeleteProjectAsync(Guid id);
+    Task<GeneralResult> GetProjectByUser(Guid id);
+    Task<GeneralResult> AssginManagerToProjectAsync(Guid projectId, Guid userId);
+    Task<GeneralResult> UnAssignMemberFromProjectAsync(Guid projectId, Guid userId);
 }
+

@@ -20,14 +20,32 @@ public class BugRepository : GenericRepository<Bug>, IBugRepository
         return await _context.Set<Bug>()
             .Include(b => b.Project)
             .Include(b => b.Attachments)
+            .Include(b => b.BugAssignments)
+            .ThenInclude(b => b.User)
+            .Include(b => b.Comments)
+            .ThenInclude(c => c.User)
             .AsNoTracking()
             .ToListAsync();
+    }
+    public async Task<Bug?> GetBugByIdWithProjectAndAttachmentInfo(Guid bugId)
+    {
+        return await _context.Set<Bug>()
+            .Include(b => b.Project)
+            .Include(b => b.Attachments)
+            .Include(b => b.BugAssignments)
+                .ThenInclude(ba => ba.User)
+            .Include(b => b.Comments)
+                .ThenInclude(c => c.User)
+            .AsNoTracking()
+            .FirstOrDefaultAsync(b => b.BugId == bugId);
     }
     public async Task<Bug?> GetBugWithProjectAndAttachmentInfo(Guid bugId)
     {
         return await _context.Set<Bug>()
             .Include(b => b.Project)
             .Include(b => b.Attachments)
+            .Include(b => b.Comments)
+                .ThenInclude(c => c.User)
             .AsNoTracking()
             .FirstOrDefaultAsync(b => b.BugId == bugId);
     }
@@ -35,6 +53,7 @@ public class BugRepository : GenericRepository<Bug>, IBugRepository
     {
         return await _context.Set<Bug>()
             .Include(b => b.Project)
+            .AsNoTracking()
             .FirstOrDefaultAsync(b => b.BugId == bugId);
     }
 }

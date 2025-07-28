@@ -13,6 +13,7 @@ public class BugTrackingSystemContext:  IdentityDbContext<User, Role, Guid,
     public DbSet<Attachment> Attachments { get; set; }
     public DbSet<BugAssignment> BugAssignments { get; set; }
     public DbSet<ProjectMember> ProjectMembers { get; set; }
+    public DbSet<Comment> Comments { get; set; }
 
     public BugTrackingSystemContext(DbContextOptions<BugTrackingSystemContext> options)
         : base(options) {}
